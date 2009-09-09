@@ -1,0 +1,9 @@
+[submodule "vendor/plugins/restful_authentication"]
+	path = vendor/plugins/restful_authentication
+	url = git://github.com/technoweenie/restful-authentication.git
+[submodule "vendor/plugins/rspec"]
+	path = vendor/plugins/rspec
+	url = git://github.com/dchelimsky/rspec.git
+[submodule "vendor/plugins/rails-spec"]
+	path = vendor/plugins/rails-spec
+	url = git://github.com/dchelimsky/rspec-rails.git
