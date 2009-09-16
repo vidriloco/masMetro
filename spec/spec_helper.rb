@@ -5,6 +5,10 @@ require File.dirname(__FILE__) + "/../config/environment" unless defined?(RAILS_
 require 'spec/autorun'
 require 'spec/rails'
 
+require 'factory_girl'
+Dir.glob("#{RAILS_ROOT}/factories/*.rb").each {|f| require f }
+
+
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
@@ -48,4 +52,10 @@ Spec::Runner.configure do |config|
   # == Notes
   #
   # For more information take a look at Spec::Runner::Configuration and Spec::Runner
+end
+
+Spec::Matchers.define :need_renewal do 
+  match do |password|
+    password.need_renewal?
+  end
 end
