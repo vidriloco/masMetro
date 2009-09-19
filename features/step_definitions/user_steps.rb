@@ -5,12 +5,8 @@ RE_User_TYPE = %r{(?: *(\w+)? *)}
 # Setting
 #
 
-Given "an anonymous user" do
+Given "no one is logged in" do
   log_out!
-end
-
-Given "$an $user_type user with $attributes" do |_, user_type, attributes|
-  create_user! user_type, attributes.to_hash_from_story
 end
 
 Given "$an $user_type user named '$login'" do |_, user_type, login|
@@ -22,10 +18,6 @@ Given "$an $user_type user logged in as '$login'" do |_, user_type, login|
   log_in_user!
 end
 
-Given "$actor is logged in" do |_, login|
-  log_in_user! @user_params || named_user(login)
-end
-
 Given "there is no $user_type user named '$login'" do |_, login|
   @user = User.find_by_login(login)
   @user.destroy! if @user
@@ -35,7 +27,7 @@ end
 #
 # Actions
 #
-When "$actor logs out" do
+When "I log out" do
   log_out
 end
 
@@ -73,9 +65,9 @@ end
 
 def named_user login
   user_params = {
-    'admin'   => {'id' => 1, 'login' => 'addie', 'password' => '1234addie', 'email' => 'admin@example.com',       },
-    'oona'    => {          'login' => 'oona',   'password' => '1234oona',  'email' => 'unactivated@example.com'},
-    'reggie'  => {          'login' => 'reggie', 'password' => 'monkey',    'email' => 'registered@example.com' },
+    'admin'   => {'id' => 1, 'login' => 'addie', 'password' => '1234addie', 'email' => 'admin@example.com', 'rol' => 'visitante'},
+    'oona'    => {          'login' => 'oona',   'password' => '1234oona',  'email' => 'unactivated@example.com', 'rol' => 'visitante'  },
+    'reggie'  => {          'login' => 'reggie', 'password' => 'monkey',    'email' => 'registered@example.com', 'rol' => 'visitante'   },
     }
   user_params[login.downcase]
 end
@@ -101,7 +93,7 @@ end
 
 def create_user(user_params={})
   @user_params       ||= user_params
-  post "/users", :user => user_params
+  post "/register", :user => user_params
   @user = User.find_by_login(user_params['login'])
 end
 
@@ -110,7 +102,6 @@ def create_user!(user_type, user_params)
   create_user user_params
   response.should redirect_to('/')
   follow_redirect!
-
 end
 
 
@@ -118,7 +109,7 @@ end
 def log_in_user user_params=nil
   @user_params ||= user_params
   user_params  ||= @user_params
-  post "/session", user_params
+  post "/iniciar_sesion", user_params
   @user = User.find_by_login(user_params['login'])
   controller.current_user
 end

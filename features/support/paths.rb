@@ -10,7 +10,30 @@ module NavigationHelpers
     
     when /the homepage/
       '/'
-    
+    when /the new mini_blog page/
+      new_mini_blog_path
+
+    when /administraciones/
+      administraciones_path
+      
+    when /pagina de inicio de sesion/
+      login_path      
+    when /Mini-Blogs config page/
+      mini_blogs_path
+    when /new Mini-Blog page/
+      new_mini_blog_path
+    when /show Mini-Blog page/
+      mini_blog_path
+    when /edit Mini-Blog page/
+      edit_mini_blog_path
+    when /Usuarios config page/
+      users_path
+    when /Usuarios registration page/
+      registro_normal_path
+    when /Usuarios admin registration page/
+      registro_admin_path
+    when /Usuarios create page/
+      register_path
     # Add more mappings here.
     # Here is a more fancy example:
     #
