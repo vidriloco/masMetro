@@ -1,0 +1,26 @@
+<h1>Usuarios</h1>
+
+
+<table>
+    <tr>
+        <th>Login</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Rol</th>
+    </tr>
+    <% @users.each do |user| %>
+        <tr>
+            <td><%= user.login %></td>
+            <td><%= user.name %></td>
+            <td><%= user.email %></td>
+            <td><%= user.rol %></td>
+        </tr>    
+    <% end %>
+</table>
+
+<h2>Contraseña de Registro</h2>
+
+<p><%= @estado %></p>
+
+<%= button_to "Generar", registration_password_path, :method => :post %>
+<%= button_to "Mostrar", registration_password_path, :method => :get %>

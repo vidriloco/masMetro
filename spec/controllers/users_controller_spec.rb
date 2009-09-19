@@ -7,19 +7,21 @@ include AuthenticatedTestHelper
 describe UsersController do
   fixtures :users
 
+  before(:each) do
+    @usuario = Factory.create(:user_administrator)
+    controller.stub!(:current_user).and_return @usuario
+  end
+
   it 'allows signup' do
     lambda do
-      create_user
+      create_user(:rol => 'VISITANTE')
       response.should be_redirect
     end.should change(User, :count).by(1)
   end
 
-  
-
-
   it 'requires login on signup' do
     lambda do
-      create_user(:login => nil)
+      create_user(:login => nil, :rol => 'VISITANTE')
       assigns[:user].errors.on(:login).should_not be_nil
       response.should be_success
     end.should_not change(User, :count)
@@ -27,7 +29,7 @@ describe UsersController do
   
   it 'requires password on signup' do
     lambda do
-      create_user(:password => nil)
+      create_user(:password => nil, :rol => 'VISITANTE')
       assigns[:user].errors.on(:password).should_not be_nil
       response.should be_success
     end.should_not change(User, :count)
@@ -35,7 +37,7 @@ describe UsersController do
   
   it 'requires password confirmation on signup' do
     lambda do
-      create_user(:password_confirmation => nil)
+      create_user(:password_confirmation => nil, :rol => 'VISITANTE')
       assigns[:user].errors.on(:password_confirmation).should_not be_nil
       response.should be_success
     end.should_not change(User, :count)
@@ -43,17 +45,144 @@ describe UsersController do
 
   it 'requires email on signup' do
     lambda do
-      create_user(:email => nil)
+      create_user(:email => nil, :rol => 'VISITANTE')
       assigns[:user].errors.on(:email).should_not be_nil
       response.should be_success
     end.should_not change(User, :count)
   end
   
+  describe 'on new action' do
+    before(:each) do
+      @user = User.new(:rol => "VISITANTE")
+      User.stub!(:new).with(:rol => "VISITANTE").and_return(@user)
+    end
+    
+    it 'should create a user with rol type VISITANTE' do
+      User.should_receive(:new).with(:rol => "VISITANTE")
+      get :new
+    end
+
+    it 'should render the new template' do
+      get :new
+      response.should render_template("new")
+    end
+    
+    it 'should assign user to view' do
+      get :new
+      assigns[:user].should == @user
+    end
+    
+    it 'should have assigned user variable attribute rol to ADMINISTRADOR' do
+        get :new
+        assigns[:user].rol.should == "VISITANTE"
+    end
   
+  end
+   
+  describe 'on new_admin action' do
+    before(:each) do
+      @user = User.new(:rol => "ADMINISTRADOR")
+      User.stub!(:new).with(:rol => "ADMINISTRADOR").and_return(@user)
+    end
+    
+    it 'should create a user with rol type ADMINISTRADOR' do
+        User.should_receive(:new).with(:rol => "ADMINISTRADOR")
+        get :new_admin
+    end
+    
+    it 'should render the new_admin template' do
+      get :new_admin
+      response.should render_template("new_admin")
+    end
+    
+    it 'should assign user to view' do
+      get :new_admin
+      assigns[:user].should == @user
+    end
+    
+    it 'should have assigned user variable attribute rol to ADMINISTRADOR' do
+        get :new_admin  
+        assigns[:user].rol.should == "ADMINISTRADOR"
+    end
+    
+  end 
+   
+  describe 'on create action' do
+    
+    describe 'successful ADMINISTRADOR' do
+      
+      before(:each) do
+        @gen=GenPassword.create
+        @options = {:login => 'quire', :email => 'quire@example.com', :name => 'Quire',
+                    :password => 'quire69', :password_confirmation => 'quire69'}
+        post :create, :user => {:rol => "ADMINISTRADOR"}.merge(@options), :clave_de_registro => @gen.password            
+      end
+      
+      it "should mantain rol type" do
+        assigns[:user].rol.should == "ADMINISTRADOR"
+      end
+    
+      it "should redirect to / on successful creation" do
+        response.should redirect_to('/')
+      end
+    end
+    
+    describe 'nonsuccessful ADMINISTRADOR' do
+      
+      before(:each) do
+        @options = {:login => 'quire', :email => 'quire@example.com', :name => 'Quire',
+                    :password => 'quire69', :password_confirmation => 'quire69'}
+        post :create, :user => {:rol => "ADMINISTRADOR"}.merge(@options), :clave_de_registro => nil            
+      end
+      
+      it "should mantain rol type" do
+        assigns[:user].rol.should == "ADMINISTRADOR"
+      end
+    
+      it "should redirect to new_admin on successful creation" do
+        response.should render_template('new_admin')
+      end
+    end
+    
+    describe 'successful VISITANTE' do
+      
+      before(:each) do
+        @options = {:login => 'quire', :email => 'quire@example.com', :name => 'Quire',
+                    :password => 'quire69', :password_confirmation => 'quire69'}
+        post :create, :user => {:rol => "VISITANTE"}.merge(@options)           
+      end
+      
+      it "should mantain rol type" do
+        assigns[:user].rol.should == "VISITANTE"
+      end
+    
+      it "should redirect to / on successful creation" do
+        response.should redirect_to('/')
+      end
+    end
+    
+    describe 'nonsuccessful VISITANTE' do
+      
+      before(:each) do
+        @options = {:login => 'quire', :name => 'Quire',
+                    :password => 'quire69', :password_confirmation => 'quire69'}
+        post :create, :user => {:rol => "VISITANTE"}.merge(@options)           
+      end
+      
+      it "should mantain rol type" do
+        assigns[:user].rol.should == "VISITANTE"
+      end
+    
+      it "should redirect to new on successful creation" do
+        response.should render_template('new')
+      end
+    end
+  end 
+    
   
   def create_user(options = {})
     post :create, :user => { :login => 'quire', :email => 'quire@example.com',
-      :password => 'quire69', :password_confirmation => 'quire69' }.merge(options)
+      :password => 'quire69', :password_confirmation => 'quire69'}.merge(options)
   end
 end
 
@@ -64,7 +193,7 @@ describe UsersController do
     end
     
     it "should route users's 'new' action correctly" do
-      route_for(:controller => 'users', :action => 'new').should == "/signup"
+      route_for(:controller => 'users', :action => 'new').should == "/registro"
     end
     
     it "should route {:controller => 'users', :action => 'create'} correctly" do

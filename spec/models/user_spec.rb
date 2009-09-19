@@ -22,6 +22,32 @@ describe User do
     end
   end
 
+  describe 'pre-creation' do
+
+    before(:each) do
+      @gen=GenPassword.create
+      @user={:name => "Macaco Piña", :email => "mac@ggoo.com", :login => "macaco", :password => "macacopina", :password_confirmation => "macacopina", :rol => "ADMINISTRADOR" }
+    end
+    
+    after(:each) do
+      User.destroy_all
+    end
+
+    it "should call User#new when registration password is valid when ADMINISTRATOR rol detected" do
+      User.new_(@user, @gen.password).should be_true
+    end
+
+    it "should not call User#new when registration password is not valid when ADMINISTRATOR rol detected" do
+      User.new_(@user, 'inverosimil').errors.should_not be_empty
+    end  
+
+  
+    it "should call User#new when VISITANTE rol detected" do
+      User.new_(@user.merge(:rol => 'VISITANTE'), nil).should be_true
+    end
+  
+  end
+
   #
   # Validations
   #

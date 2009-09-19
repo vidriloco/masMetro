@@ -1,12 +1,13 @@
 <h1>Registrarse como un usuario nuevo</h1>
 
 <% @user.password = @user.password_confirmation = nil %>
-
 <%= error_messages_for :user %>
-
-<% form_for :user, :url => register_path, :method => :post do |f| -%>
+<% form_for :user, :url => register_path do |f| -%>
 
 <%= render :partial => 'form_new_user', :locals => { :f => f} %>
+
+<p><%= label_tag 'clave_de_registro', "Clave de Registro" %><br/>
+<%= password_field_tag :clave_de_registro %></p>
 
 <p><%= submit_tag 'Guardar' %></p>
 <% end -%>

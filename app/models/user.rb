@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
   # HACK HACK HACK -- how to do attr_accessible from here?
   # prevents a user from submitting a crafted form that bypasses activation
   # anything else you want your user to change should be added here.
-  attr_accessible :login, :email, :name, :password, :password_confirmation
+  attr_accessible :login, :email, :name, :password, :password_confirmation, :rol
 
 
 
@@ -46,7 +46,28 @@ class User < ActiveRecord::Base
   def email=(value)
     write_attribute :email, (value ? value.downcase : nil)
   end
+  
+  def es_administrador?
+    self.rol.eql?("ADMINISTRADOR")
+  end
+  
+  def es_visitante?
+    self.rol.eql?("VISITANTE")
+  end
 
+  def self.new_(attrs, reg_passwd)
+    valido = GenPassword.password_is_valid?(reg_passwd)
+    administrador = attrs[:rol].eql?("ADMINISTRADOR")
+    visitante = attrs[:rol].eql?("VISITANTE")
+    @user = User.new(attrs)
+    if (administrador && valido) || visitante 
+      @user
+    else 
+      @user.errors.add(:clave_de_registro, "no es válida")
+      @user
+    end
+  end
+    
   protected
     
 
