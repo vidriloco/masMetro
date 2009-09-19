@@ -5,6 +5,7 @@ class AdministracionesController < ApplicationController
   # GET /administraciones
   # GET /administraciones.xml
   def index
+
   end
 
   # GET /administraciones/1
@@ -88,8 +89,7 @@ class AdministracionesController < ApplicationController
       @genpassword = GenPassword.create
       flash[:notice] = "La contraseña de registro ha sido renovada" 
     end
-    @genpassword = GenPassword.find(:first) if request.get?
-  
+    @estado = GenPassword.password_information 
     respond_to do |format|
       format.html 
       format.js 

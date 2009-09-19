@@ -24,7 +24,7 @@ describe AdministracionesController do
       # funcionalidadque provee el método 'create' de GenPassword
       password_object = GenPassword.create
       get :registration_password
-      assigns[:genpassword].password.should == password_object.password
+      assigns[:estado].should == "Generada: #{password_object.password}"
     end
     
     it "asigns password when generated on the fly" do
