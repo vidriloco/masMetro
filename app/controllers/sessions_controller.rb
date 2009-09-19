@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
   def create
     logout_keeping_session!
     user = User.authenticate(params[:login], params[:password])
-    if user
+    if user 
       # Protects against session fixation attacks, causes request forgery
       # protection if user resubmits an earlier form using back
       # button. Uncomment if you understand the tradeoffs.
@@ -18,26 +18,31 @@ class SessionsController < ApplicationController
       self.current_user = user
       new_cookie_flag = (params[:remember_me] == "1")
       handle_remember_cookie! new_cookie_flag
-      redirect_back_or_default('/')
-      flash[:notice] = "Logged in successfully"
+      flash[:notice] = "¡Estás dentro!"
+      
+      if user.es_administrador?
+        redirect_back_or_default('/administraciones')
+      elsif user.es_visitante?
+        redirect_back_or_default('/')
+      end
     else
       note_failed_signin
       @login       = params[:login]
       @remember_me = params[:remember_me]
-      render :action => 'new'
+      redirect_to('/iniciar_sesion')
     end
   end
 
   def destroy
     logout_killing_session!
-    flash[:notice] = "You have been logged out."
+    flash[:notice] = "Tú sesión ha terminado"
     redirect_back_or_default('/')
   end
 
 protected
   # Track failed login attempts
   def note_failed_signin
-    flash[:error] = "Couldn't log you in as '#{params[:login]}'"
+    flash[:error] = "Nombre de usuario ó Contraseña incorrectos"
     logger.warn "Failed login for '#{params[:login]}' from #{request.remote_ip} at #{Time.now.utc}"
   end
 end

@@ -7,7 +7,7 @@ include AuthenticatedTestHelper
 describe SessionsController do
   fixtures        :users
   before do 
-    @user  = mock_user
+    @user  = Factory.build(:user_visitor)
     @login_params = { :login => 'quentin', :password => 'test' }
     User.stub!(:authenticate).with(@login_params[:login], @login_params[:password]).and_return(@user)
   end
@@ -44,7 +44,7 @@ describe SessionsController do
             it "kills existing login"        do controller.should_receive(:logout_keeping_session!); do_create; end    
             it "authorizes me"               do do_create; controller.send(:authorized?).should be_true;   end    
             it "logs me in"                  do do_create; controller.send(:logged_in?).should  be_true  end    
-            it "greets me nicely"            do do_create; response.flash[:notice].should =~ /success/i   end
+            it "greets me nicely"            do do_create; response.flash[:notice].should == "¡Estás dentro!"   end
             it "sets/resets/expires cookie"  do controller.should_receive(:handle_remember_cookie!).with(want_remember_me); do_create end
             it "sends a cookie"              do controller.should_receive(:send_remember_cookie!);  do_create end
             it 'redirects to the home page'  do do_create; response.should redirect_to('/')   end
@@ -76,8 +76,8 @@ describe SessionsController do
       login_as :quentin
     end
     it 'logs out keeping session'   do controller.should_receive(:logout_keeping_session!); do_create end
-    it 'flashes an error'           do do_create; flash[:error].should =~ /Couldn't log you in as 'quentin'/ end
-    it 'renders the log in page'    do do_create; response.should render_template('new')  end
+    it 'flashes an error'           do do_create; flash[:error].should == "Nombre de usuario ó Contraseña incorrectos" end
+    it 'renders the log in page'    do do_create; response.should redirect_to('/iniciar_sesion')  end
     it "doesn't log me in"          do do_create; controller.send(:logged_in?).should == false end
     it "doesn't send password back" do 
       @login_params[:password] = 'FROBNOZZ'
@@ -102,7 +102,7 @@ end
 describe SessionsController do
   describe "route generation" do
     it "should route the new sessions action correctly" do
-      route_for(:controller => 'sessions', :action => 'new').should == "/login"
+      route_for(:controller => 'sessions', :action => 'new').should == "/iniciar_sesion"
     end
     it "should route the create sessions correctly" do
       route_for(:controller => 'sessions', :action => 'create').should == {:path => session_path, :method => :post}
@@ -114,7 +114,7 @@ describe SessionsController do
   
   describe "route recognition" do
     it "should generate params from GET /login correctly" do
-      params_from(:get, '/login').should == {:controller => 'sessions', :action => 'new'}
+      params_from(:get, '/iniciar_sesion').should == {:controller => 'sessions', :action => 'new'}
     end
     it "should generate params from POST /session correctly" do
       params_from(:post, '/session').should == {:controller => 'sessions', :action => 'create'}
