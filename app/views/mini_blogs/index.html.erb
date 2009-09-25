@@ -1,0 +1,22 @@
+<h1>Mini-Blogs</h1>
+
+<table>
+  <tr>
+    <th>Nombre</th>
+    <th>Descripcion</th>
+  </tr>
+
+<% @mini_blogs.each do |mini_blog| %>
+  <tr>
+    <td><%=h mini_blog.nombre %></td>
+    <td><i><%=h mini_blog.descripcion_ %></i></td>
+    <td><%= button_to 'Mostrar', mini_blog, :method => :get %></td>
+    <td><%= button_to 'Modificar', edit_mini_blog_path(mini_blog), :method => :get %></td>
+    <td><%= button_to 'Borrar', mini_blog, :confirm => '¿Deseas realmente borrar éste Mini-Blog?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= button_to 'Nuevo', new_mini_blog_path, :method => :get %>

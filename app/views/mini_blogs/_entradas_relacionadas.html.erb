@@ -1,0 +1,16 @@
+<h4><%= pluralize(@entradas.size, "Entrada") %></h4>
+
+<% @entradas.each do |entrada| %>
+    <h2><%=h entrada.titulo %></h2>
+    <p><%= white_list CGI.unescapeHTML(entrada.contenido) %></p>
+    <p><b>Publicado por: </b><%=h entrada.user.login %></p>
+    
+    <% if logeado_administrador? %>
+        <p><%=h entrada.visible_ %></p>
+        <p><%= button_to 'Mostrar', mini_blog_entrada_path(entrada.mini_blog, entrada), :method => :get %></p>
+        <p><%= button_to 'Modificar', edit_mini_blog_entrada_path(entrada.mini_blog, entrada), :method => :get %></p>
+        <p><%= button_to 'Borrar', mini_blog_entrada_path(entrada.mini_blog,entrada), :confirm => '¿Deseas realmente borrar ésta entrada?', :method => :delete %></p>
+    <% end %>
+<% end %>
+
+<br />

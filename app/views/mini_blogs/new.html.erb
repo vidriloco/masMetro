@@ -1,0 +1,12 @@
+<h1>Crear Mini-Blog</h1>
+
+<% form_for(@mini_blog) do |form| %>
+  <%= form.error_messages -%>
+
+  <%= render :partial => "form_mini_blog", :locals => {:form => form} %>
+  
+  <p>
+    <%= form.submit 'Crear' %> | <%= link_to 'Atrás', mini_blogs_path %>
+  </p>
+<% end %>
+

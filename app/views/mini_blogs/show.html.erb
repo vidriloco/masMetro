@@ -1,0 +1,27 @@
+
+<% if logeado_administrador? %>
+    <p>
+      <b>Nombre:</b>
+      <%=h @mini_blog.nombre %>
+    </p>
+
+    <p>
+      <b>Descripción:</b>
+      <i><%=h @mini_blog.descripcion_ %></i>
+    </p>
+
+
+    <%= link_to 'Modificar', edit_mini_blog_path(@mini_blog) %> |
+    <%= link_to 'Atrás', mini_blogs_path %>
+
+    <h2>Entradas de éste Mini-Blog</h2>
+
+    <%= button_to 'Nueva', new_mini_blog_entrada_path(@mini_blog), :method => :get %>
+<% end %>
+
+<% if @entradas.empty? %>
+    <p><b>No hay entradas todavía</b></p>
+<% else %>
+    <%= render :partial => 'entradas_relacionadas' %>
+<% end %>
+
