@@ -5,6 +5,7 @@ Factory.define :user_administrator, :class => :user do |f|
   f.password_confirmation "monstruo"
   f.password "monstruo"
   f.rol "ADMINISTRADOR"
+  f.temporal false
 end
 
 Factory.define :user_visitor, :class => :user do |f|
@@ -14,4 +15,5 @@ Factory.define :user_visitor, :class => :user do |f|
   f.password_confirmation "juanito"
   f.password "juanito"
   f.rol "VISITANTE"
+  f.temporal false
 end

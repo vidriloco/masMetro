@@ -11,9 +11,18 @@ class CreateUsers < ActiveRecord::Migration
       t.column :remember_token,            :string, :limit => 40
       t.column :remember_token_expires_at, :datetime
       t.column :rol,                       :string
-
+      t.column :temporal,                  :boolean
     end
     add_index :users, :login, :unique => true
+    
+    @user=User.new(:login => "administrador", 
+                :name => "Administrador", 
+                :email => "admin@example.com", 
+                :password => "nuestro_metro", 
+                :password_confirmation => "nuestro_metro", 
+                :rol => "ADMINISTRADOR")
+    @user.temporal = true 
+    @user.save!
   end
 
   def self.down

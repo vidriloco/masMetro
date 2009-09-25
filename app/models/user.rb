@@ -5,6 +5,8 @@ class User < ActiveRecord::Base
   include Authentication::ByPassword
   include Authentication::ByCookieToken
 
+  has_many :entradas
+
   validates_presence_of     :login
   validates_length_of       :login,    :within => 3..40
   validates_uniqueness_of   :login
@@ -53,6 +55,10 @@ class User < ActiveRecord::Base
   
   def es_visitante?
     self.rol.eql?("VISITANTE")
+  end
+  
+  def tiene_registro_temporal?
+    self.temporal
   end
 
   def self.new_(attrs, reg_passwd)

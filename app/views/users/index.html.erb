@@ -14,6 +14,10 @@
             <td><%= user.name %></td>
             <td><%= user.email %></td>
             <td><%= user.rol %></td>
+            <% if current_user.eql?(user) || user.tiene_registro_temporal? %>
+                <td><%= button_to 'Borrar', user, :confirm => '¿Deseas realmente borrar éste usuario?', 
+                                                  :method => :delete %></td>
+            <% end %>
         </tr>    
     <% end %>
 </table>
