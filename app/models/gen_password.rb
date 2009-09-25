@@ -13,6 +13,26 @@ class GenPassword < ActiveRecord::Base
     return gpasswd
   end
   
+  # Método que decide la validez de la contraseña que le es pasada como parámetro
+  def self.password_is_valid?(password)
+    pas_obj = self.first
+    pas_obj.nil? ? false : pas_obj.password == password
+  end
+  
+  # Método que devuelve el estado de la contraseña actual en la base de datos
+  # ó un mensaje de que no hay una generada aún.
+  def self.password_creation_status
+    pas_obj = self.first
+    pas_obj.nil? ? "No ha sido generada" : "Generada: #{pas_obj.created_at.to_s(:short)}"
+  end
+  
+  # Método que devuelve la contraseña actual en la base de datos
+  # ó un mensaje de que no hay una generada aún.
+  def self.password_information
+    pas_obj = self.first
+    pas_obj.nil? ? "No ha sido generada" : "Generada: #{pas_obj.password}"
+  end
+  
   # @author: Andrew Pociu (http://www.geekpedia.com/author1_Andrew-Pociu.html)
   # This piece of code generates a random password of the specified length, but mixes the two sets of letters so that a pronouncable password is being generated.
   def generate_random(size = 4)

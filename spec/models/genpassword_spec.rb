@@ -34,4 +34,34 @@ describe GenPassword do
     gen = GenPassword.create
     GenPassword.should_not need_renewal
   end
+  
+  it "should validate correct password" do
+    gen = GenPassword.create
+    GenPassword.password_is_valid?(gen.password).should be_true
+  end
+  
+  it "should not validate incorrect password" do
+    GenPassword.create
+    GenPassword.password_is_valid?("algoypassword").should_not be_true
+  end
+  
+  it "should not validate nil password" do
+    GenPassword.create
+    GenPassword.password_is_valid?(nil).should_not be_true
+  end
+  
+  it "should not validate when registration password is not set" do
+    GenPassword.destroy_all
+    GenPassword.password_is_valid?("algoypassword").should_not be_true    
+  end
+  
+  it "should retrieve the current status of the generated password" do
+    gen=GenPassword.create
+    GenPassword.password_information.should be_eql("Generada: #{gen.password}")
+  end
+  
+  it "should retrieve the current status of a not yet generated password" do
+    GenPassword.destroy_all
+    GenPassword.password_information.should be_eql("No ha sido generada")
+  end
 end
