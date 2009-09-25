@@ -24,6 +24,10 @@ module NavigationHelpers
       new_mini_blog_path
     when /show Mini-Blog page/
       mini_blog_path
+    when /entradas de Mini-Blog page/
+      mini_blog_entradas_path
+    when /entrada de Mini-Blog page/
+      mini_blog_entrada_path
     when /edit Mini-Blog page/
       edit_mini_blog_path
     when /Usuarios config page/
