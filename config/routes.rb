@@ -1,7 +1,10 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :administraciones
 
-  map.resources :mini_blogs
+  map.resources :administraciones
+  
+  map.resources :entradas
+  
+  map.resources :mini_blogs, :has_many => :entradas
 
   map.logout '/logout', :controller => 'sessions', :action => 'destroy'
   map.login '/iniciar_sesion', :controller => 'sessions', :action => 'new'
