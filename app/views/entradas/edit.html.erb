@@ -1,0 +1,14 @@
+<h1>Modificar entrada</h1>
+
+<% form_for(@entrada) do |f| %>
+  <%= f.error_messages %>
+
+  <%= render :partial => 'form_entrada', :locals => {:f => f} %>
+
+  <p>
+    <%= f.submit 'Guardar' %>
+  </p>
+<% end %>
+
+<%= link_to 'Mostrar', mini_blog_entrada_path(@entrada.mini_blog, @entrada) %> |
+<%= link_to 'Atrás', mini_blog_path(@entrada.mini_blog) %>

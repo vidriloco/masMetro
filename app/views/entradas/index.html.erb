@@ -1,0 +1,26 @@
+<h1>Listing entradas</h1>
+
+<table>
+  <tr>
+    <th>Titulo</th>
+    <th>Contenido</th>
+    <th>Visible</th>
+    <th>Mini blog</th>
+  </tr>
+
+<% @entradas.each do |entrada| %>
+  <tr>
+    <td><%=h entrada.titulo %></td>
+    <td><%= white_list CGI.unescapeHTML(entrada.contenido) %></td>
+    <td><%=h entrada.visible %></td>
+    <td><%=h entrada.mini_blog_id %></td>
+    <td><%= link_to 'Show', entrada %></td>
+    <td><%= link_to 'Edit', edit_entrada_path(entrada) %></td>
+    <td><%= link_to 'Destroy', entrada, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New entrada', new_entrada_path %>

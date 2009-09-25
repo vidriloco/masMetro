@@ -1,0 +1,23 @@
+<p>
+  <b>Titulo:</b>
+  <%=h @entrada.titulo %>
+</p>
+
+<p>
+  <b>Contenido:</b>
+  <%= white_list CGI.unescapeHTML(@entrada.contenido) %>
+</p>
+
+<p>
+  <b>Publicado por:</b>
+  <%=h @entrada.user.login %>
+</p>
+
+<p>
+  <b>Visible:</b>
+  <%=h @entrada.visible_ %>
+</p>
+
+
+<%= link_to 'Modificar', edit_mini_blog_entrada_path(@entrada.mini_blog, @entrada) %> |
+<%= link_to 'Atrás', mini_blog_path(@entrada.mini_blog) %>

@@ -1,0 +1,14 @@
+<h1>Escribir Nueva Entrada</h1>
+
+<% form_for([@mini_blog, @entrada]) do |f| %>
+  <%= f.error_messages %>
+
+  <%= render :partial => 'form_entrada', :locals => {:f => f} %>
+
+  <p>
+    <%= f.submit 'Crear' %>
+  </p>
+  
+<% end %>
+
+<%= link_to 'Atrás', mini_blog_path(@entrada.mini_blog) %>
